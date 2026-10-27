@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QP Cropper</title>
+  <meta name="description" content="Crop empty PDF margins and combine 2 or 3 pages onto a single sheet. Runs entirely in your browser.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M6 2v14a2 2 0 0 0 2 2h14M2 6h14a2 2 0 0 1 2 2v14"/></svg>
+      <span>QP Cropper</span>
+    </div>
+    <p class="tag">Crop PDF margins &amp; put 2–3 pages on one sheet. Your file never leaves this browser.</p>
+  </header>
+
+  <main>
+    <section id="drop" class="drop">
+      <input id="file" type="file" accept="application/pdf,.pdf" hidden>
+      <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M12 16V4m0 0-4 4m4-4 4 4M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+      <p><strong>Drop a PDF here</strong> or <button type="button" class="link" id="pick">choose a file</button></p>
+      <p class="muted small">Password-protected PDFs are supported — you'll be asked for the password.</p>
+    </section>
+
+    <section id="workspace" hidden>
+      <div class="filebar">
+        <div>
+          <div id="fname" class="fname"></div>
+          <div id="finfo" class="muted small"></div>
+        </div>
+        <button type="button" class="btn ghost" id="another">Open another PDF</button>
+      </div>
+
+      <div id="notice" class="notice" hidden></div>
+
+      <div class="layout">
+        <aside class="panel">
+          <h2>1 · Crop</h2>
+          <label class="field">Crop mode
+            <select id="mode">
+              <option value="width" selected>Same width, trim each page's height</option>
+              <option value="page">Each page separately</option>
+              <option value="union">Same box for all pages</option>
+            </select>
+          </label>
+          <label class="field">Padding around content <span class="val" id="padVal"></span>
+            <input type="range" id="pad" min="0" max="20" step="0.5" value="3">
+          </label>
+          <label class="field">Whiteness threshold <span class="val" id="thrVal"></span>
+            <input type="range" id="thr" min="150" max="254" step="1" value="235">
+            <span class="hint">Lower = ignore light-grey marks (watermarks, scan noise).</span>
+          </label>
+          <details>
+            <summary>Extra trim (mm)</summary>
+            <div class="grid4">
+              <label>Top<input type="number" id="tTop" value="0" step="1"></label>
+              <label>Bottom<input type="number" id="tBottom" value="0" step="1"></label>
+              <label>Left<input type="number" id="tLeft" value="0" step="1"></label>
+              <label>Right<input type="number" id="tRight" value="0" step="1"></label>
+            </div>
+            <span class="hint">Positive cuts more, negative adds space back.</span>
+          </details>
+          <label class="field">Pages to include
+            <input type="text" id="range" placeholder="All pages  (e.g. 1-4, 6, 9-)">
+          </label>
+
+          <h2>2 · Combine</h2>
+          <div class="field">Pages per sheet
+            <div class="seg" id="nup">
+              <button type="button" data-v="1">1</button>
+              <button type="button" data-v="2" class="on">2</button>
+              <button type="button" data-v="3">3</button>
+              <button type="button" data-v="4">4</button>
+            </div>
+          </div>
+          <label class="field">Arrange
+            <select id="dir">
+              <option value="v" selected>Stacked top to bottom</option>
+              <option value="h">Side by side</option>
+            </select>
+          </label>
+          <label class="field">Output sheet size
+            <select id="size">
+              <option value="a4" selected>A4 portrait</option>
+              <option value="a4l">A4 landscape</option>
+              <option value="letter">Letter portrait</option>
+              <option value="fit">Fit to content (no scaling)</option>
+            </select>
+          </label>
+          <label class="field">Sheet margin <span class="val" id="marVal"></span>
+            <input type="range" id="mar" min="0" max="25" step="1" value="6">
+          </label>
+          <label class="field">Gap between pages <span class="val" id="gapVal"></span>
+            <input type="range" id="gap" min="0" max="20" step="1" value="3">
+          </label>
+          <label class="check"><input type="checkbox" id="sameScale" checked> Same text size on every sheet</label>
+          <label class="check"><input type="checkbox" id="divider" checked> Thin divider line between pages</label>
+          <label class="field" id="dpiWrap" hidden>Image quality (protected PDF)
+            <select id="dpi">
+              <option value="150">150 DPI · small file</option>
+              <option value="220" selected>220 DPI · balanced</option>
+              <option value="300">300 DPI · sharp</option>
+            </select>
+          </label>
+
+          <button type="button" class="btn primary" id="go">Create PDF</button>
+          <div id="progress" class="muted small"></div>
+        </aside>
+
+        <div class="main">
+          <div class="tabs">
+            <button type="button" class="tab on" data-tab="src">Original pages <span id="srcCount"></span></button>
+            <button type="button" class="tab" data-tab="out" id="outTab" disabled>Result</button>
+          </div>
+          <div id="srcGrid" class="grid"></div>
+          <div id="outPane" hidden>
+            <div class="outbar">
+              <div id="outInfo" class="muted small"></div>
+              <a class="btn primary" id="download" download>Download PDF</a>
+            </div>
+            <div id="outGrid" class="grid out"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="pwDialog">
+    <form method="dialog" id="pwForm">
+      <h3>🔒 Password required</h3>
+      <p id="pwMsg">This PDF is protected. Enter its password to open it.</p>
+      <input type="password" id="pwInput" autocomplete="off" placeholder="PDF password" required>
+      <label class="check small"><input type="checkbox" id="pwShow"> Show password</label>
+      <div class="actions">
+        <button type="button" class="btn ghost" id="pwCancel">Cancel</button>
+        <button type="submit" class="btn primary" value="ok">Unlock</button>
+      </div>
+    </form>
+  </dialog>
+
+  <footer class="muted small">Processing happens locally with pdf.js and pdf-lib. Nothing is uploaded.</footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <!-- @cantoo/pdf-lib: a maintained pdf-lib fork that can open password-protected PDFs -->
+  <script src="https://cdn.jsdelivr.net/npm/@cantoo/pdf-lib@2.3.2/dist/pdf-lib.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

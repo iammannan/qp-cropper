@@ -26,7 +26,8 @@
     sameScale: $('sameScale'), divider: $('divider'), dpiWrap: $('dpiWrap'), dpi: $('dpi'),
     go: $('go'), progress: $('progress'), srcGrid: $('srcGrid'), srcCount: $('srcCount'),
     outTab: $('outTab'), outPane: $('outPane'), outInfo: $('outInfo'), outGrid: $('outGrid'),
-    download: $('download'),
+    download: $('download'), print: $('print'),
+    prDialog: $('prDialog'), prForm: $('prForm'), prPaper: $('prPaper'), prSkip: $('prSkip'), prCancel: $('prCancel'),
     pwDialog: $('pwDialog'), pwForm: $('pwForm'), pwMsg: $('pwMsg'), pwInput: $('pwInput'),
     pwShow: $('pwShow'), pwCancel: $('pwCancel'),
   };
@@ -499,6 +500,49 @@
     doc.destroy();
     setProgress('Done ✓');
   }
+
+  /* ---------------- printing ---------------- */
+
+  const SKIP_PRINT_TIP = 'qpcropper.skipPrintTip';
+  const PAPER = { a4: 'A4, portrait', a4l: 'A4, landscape', letter: 'Letter, portrait', fit: 'the size of your paper' };
+
+  function printTip() {
+    try { if (localStorage.getItem(SKIP_PRINT_TIP) === '1') return Promise.resolve(true); } catch (e) { /* storage blocked */ }
+    el.prPaper.textContent = PAPER[el.size.value] || 'A4';
+    el.prSkip.checked = false;
+    return new Promise((resolve) => {
+      const done = (ok) => {
+        el.prForm.removeEventListener('submit', onOk);
+        el.prCancel.removeEventListener('click', onCancel);
+        el.prDialog.removeEventListener('cancel', onCancel);
+        el.prDialog.close();
+        if (ok && el.prSkip.checked) { try { localStorage.setItem(SKIP_PRINT_TIP, '1'); } catch (e) { /* ignore */ } }
+        resolve(ok);
+      };
+      const onOk = (e) => { e.preventDefault(); done(true); };
+      const onCancel = (e) => { e.preventDefault(); done(false); };
+      el.prForm.addEventListener('submit', onOk);
+      el.prCancel.addEventListener('click', onCancel);
+      el.prDialog.addEventListener('cancel', onCancel);
+      el.prDialog.showModal();
+    });
+  }
+
+  el.print.addEventListener('click', async () => {
+    if (!state.outUrl || !(await printTip())) return;
+    // print the PDF itself (not this page) through a hidden frame; new tab if the browser refuses
+    document.getElementById('printFrame')?.remove();
+    const frame = document.createElement('iframe');
+    frame.id = 'printFrame';
+    frame.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;';
+    frame.onload = () => {
+      setTimeout(() => {
+        try { frame.contentWindow.focus(); frame.contentWindow.print(); } catch (e) { window.open(state.outUrl, '_blank'); }
+      }, 300);
+    };
+    frame.src = state.outUrl;
+    document.body.appendChild(frame);
+  });
 
   /* ---------------- UI wiring ---------------- */
 

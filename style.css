@@ -142,6 +142,10 @@ dialog h3 { margin: 0 0 6px; }
 dialog p { margin: 0 0 12px; color: var(--muted); }
 dialog p.err { color: var(--crop); }
 dialog input[type=password], dialog input[type=text] { margin-bottom: 10px; }
+dialog p strong { color: var(--text); }
+.steps { margin: 0 0 12px; padding-left: 18px; font-size: 14px; }
+.steps li { margin-bottom: 4px; }
+.outbtns { display: flex; gap: 8px; }
 .actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
 
 footer { text-align: center; padding: 16px; }

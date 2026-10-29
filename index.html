@@ -127,7 +127,10 @@
           <div id="outPane" hidden>
             <div class="outbar">
               <div id="outInfo" class="muted small"></div>
-              <a class="btn primary" id="download" download>Download PDF</a>
+              <div class="outbtns">
+                <button type="button" class="btn ghost" id="print">🖨 Print</button>
+                <a class="btn primary" id="download" download>Download PDF</a>
+              </div>
             </div>
             <div id="outGrid" class="grid out"></div>
           </div>
@@ -145,6 +148,24 @@
       <div class="actions">
         <button type="button" class="btn ghost" id="pwCancel">Cancel</button>
         <button type="submit" class="btn primary" value="ok">Unlock</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="prDialog">
+    <form method="dialog" id="prForm">
+      <h3>⚠️ Before you print</h3>
+      <p>In the print window, set <strong>Scale</strong> to <strong>“Fit to printable area”</strong>, otherwise the printer may cut off the edges of the sheet.</p>
+      <ul class="steps">
+        <li><strong>Chrome / Edge:</strong> More settings → Scale → <em>Fit to printable area</em></li>
+        <li><strong>Firefox:</strong> Scale → <em>Fit to page width</em></li>
+        <li><strong>Adobe Reader:</strong> Page sizing → <em>Fit</em> (or <em>Shrink oversized pages</em>)</li>
+        <li>Paper: <strong id="prPaper">A4</strong></li>
+      </ul>
+      <label class="check small"><input type="checkbox" id="prSkip"> Don't show this again</label>
+      <div class="actions">
+        <button type="button" class="btn ghost" id="prCancel">Cancel</button>
+        <button type="submit" class="btn primary">Continue to print</button>
       </div>
     </form>
   </dialog>

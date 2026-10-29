@@ -17,7 +17,9 @@ Everything runs in your browser. The PDF is never uploaded anywhere.
 
 ## Use it
 
-Open the GitHub Pages site, drop a PDF, adjust the settings, click **Create PDF**, then **Download PDF**.
+Open the GitHub Pages site, drop a PDF, adjust the settings, click **Create PDF**, then **Download PDF** or **Print**.
+
+Before printing, the app reminds you to set **Scale → Fit to printable area** in the print window so the printer doesn't cut off the edges of the sheet.
 
 To run locally, serve the folder with any static web server (opening `index.html` directly from disk also works in most browsers):
 

@@ -21,7 +21,7 @@
     fname: $('fname'), finfo: $('finfo'), another: $('another'), notice: $('notice'),
     mode: $('mode'), pad: $('pad'), padVal: $('padVal'), thr: $('thr'), thrVal: $('thrVal'),
     tTop: $('tTop'), tBottom: $('tBottom'), tLeft: $('tLeft'), tRight: $('tRight'),
-    range: $('range'), nup: $('nup'), dir: $('dir'), size: $('size'),
+    range: $('range'), nup1: $('nup1'), nup: $('nup'), dir: $('dir'), size: $('size'),
     mar: $('mar'), marVal: $('marVal'), gap: $('gap'), gapVal: $('gapVal'),
     sameScale: $('sameScale'), divider: $('divider'), dpiWrap: $('dpiWrap'), dpi: $('dpi'),
     go: $('go'), progress: $('progress'), srcGrid: $('srcGrid'), srcCount: $('srcCount'),
@@ -38,7 +38,8 @@
     password: null,
     vector: true,       // false when pdf-lib cannot read the file (encrypted) → raster output
     pages: [],          // { w, h, gray, gw, gh, bbox, thumb, card, box }
-    nup: 2,
+    nup1: 3,            // pages on the first sheet
+    nup: 2,             // pages on every later sheet
     outUrl: null,
   };
 
@@ -386,12 +387,17 @@
   }
 
   function layout(out, items) {
-    const k = state.nup;
     const vertical = el.dir.value === 'v';
     const m = +el.mar.value * MM;
     const g = +el.gap.value * MM;
-    const groups = [];
-    for (let i = 0; i < items.length; i += k) groups.push(items.slice(i, i + k));
+    // the first sheet holds state.nup1 pages, every later sheet state.nup
+    const groups = [], caps = [];
+    for (let i = 0; i < items.length;) {
+      const k = groups.length ? state.nup : state.nup1;
+      groups.push(items.slice(i, i + k));
+      caps.push(k);
+      i += k;
+    }
 
     // content size of each group at scale 1
     const dims = groups.map((grp) => {
@@ -413,7 +419,7 @@
         : Math.min((W - 2 * m - d.gaps) / (d.cw - d.gaps), (H - 2 * m) / d.ch));
       if (el.sameScale.checked) {
         // use the scale that fits a *full* sheet; a short last sheet must not get bigger text
-        const full = scales.filter((_, i) => groups[i].length === k);
+        const full = scales.filter((_, i) => groups[i].length === caps[i]);
         const s = Math.min(...(full.length ? full : scales));
         scales = scales.map(() => s);
       }
@@ -461,7 +467,8 @@
     if (state.outUrl) URL.revokeObjectURL(state.outUrl);
     state.outUrl = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
     el.download.href = state.outUrl;
-    const suffix = state.nup > 1 ? `_${state.nup}up` : '_cropped';
+    const { nup1, nup } = state;
+    const suffix = nup1 !== nup ? `_${nup1}-${nup}up` : nup > 1 ? `_${nup}up` : '_cropped';
     el.download.download = state.name.replace(/\.pdf$/i, '') + suffix + '.pdf';
     el.outTab.disabled = false;
     showTab('out');
@@ -507,12 +514,12 @@
     showTab('src');
   }
 
-  el.nup.addEventListener('click', (e) => {
+  [['nup1', el.nup1], ['nup', el.nup]].forEach(([key, seg]) => seg.addEventListener('click', (e) => {
     const b = e.target.closest('button');
     if (!b) return;
-    state.nup = +b.dataset.v;
-    el.nup.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b));
-  });
+    state[key] = +b.dataset.v;
+    seg.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b));
+  }));
 
   let raf = 0;
   const schedule = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(updateCrops); };

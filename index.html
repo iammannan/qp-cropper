@@ -46,7 +46,7 @@
             </select>
           </label>
           <label class="field">Padding around content <span class="val" id="padVal"></span>
-            <input type="range" id="pad" min="0" max="20" step="0.5" value="3">
+            <input type="range" id="pad" min="0" max="20" step="0.5" value="1">
           </label>
           <label class="field">Whiteness threshold <span class="val" id="thrVal"></span>
             <input type="range" id="thr" min="150" max="254" step="1" value="235">
@@ -68,32 +68,41 @@
 
           <h2>2 · Combine</h2>
           <div class="field">Pages per sheet
+            <span class="seglabel">First sheet</span>
+            <div class="seg" id="nup1">
+              <button type="button" data-v="1">1</button>
+              <button type="button" data-v="2">2</button>
+              <button type="button" data-v="3" class="on">3</button>
+              <button type="button" data-v="4">4</button>
+            </div>
+            <span class="seglabel">Then, each sheet</span>
             <div class="seg" id="nup">
               <button type="button" data-v="1">1</button>
               <button type="button" data-v="2" class="on">2</button>
               <button type="button" data-v="3">3</button>
               <button type="button" data-v="4">4</button>
             </div>
+            <span class="hint">e.g. 5 pages with 3, then 2 → 2 sheets. Pick the same number twice for a plain N-up.</span>
           </div>
           <label class="field">Arrange
             <select id="dir">
-              <option value="v" selected>Stacked top to bottom</option>
-              <option value="h">Side by side</option>
+              <option value="v">Stacked top to bottom</option>
+              <option value="h" selected>Side by side</option>
             </select>
           </label>
           <label class="field">Output sheet size
             <select id="size">
-              <option value="a4" selected>A4 portrait</option>
-              <option value="a4l">A4 landscape</option>
+              <option value="a4">A4 portrait</option>
+              <option value="a4l" selected>A4 landscape</option>
               <option value="letter">Letter portrait</option>
               <option value="fit">Fit to content (no scaling)</option>
             </select>
           </label>
           <label class="field">Sheet margin <span class="val" id="marVal"></span>
-            <input type="range" id="mar" min="0" max="25" step="1" value="6">
+            <input type="range" id="mar" min="0" max="25" step="1" value="1">
           </label>
           <label class="field">Gap between pages <span class="val" id="gapVal"></span>
-            <input type="range" id="gap" min="0" max="20" step="1" value="3">
+            <input type="range" id="gap" min="0" max="20" step="1" value="1">
           </label>
           <label class="check"><input type="checkbox" id="sameScale" checked> Same text size on every sheet</label>
           <label class="check"><input type="checkbox" id="divider" checked> Thin divider line between pages</label>

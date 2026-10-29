@@ -68,12 +68,21 @@
 
           <h2>2 · Combine</h2>
           <div class="field">Pages per sheet
-            <div class="seg" id="nup">
+            <span class="seglabel">First sheet</span>
+            <div class="seg" id="nup1">
               <button type="button" data-v="1">1</button>
               <button type="button" data-v="2">2</button>
               <button type="button" data-v="3" class="on">3</button>
               <button type="button" data-v="4">4</button>
             </div>
+            <span class="seglabel">Second sheet onwards</span>
+            <div class="seg" id="nup">
+              <button type="button" data-v="1">1</button>
+              <button type="button" data-v="2" class="on">2</button>
+              <button type="button" data-v="3">3</button>
+              <button type="button" data-v="4">4</button>
+            </div>
+            <span class="hint">e.g. 5 pages with 3, then 2 → 2 sheets. Pick the same number twice for a plain N-up.</span>
           </div>
           <label class="field">Arrange
             <select id="dir">

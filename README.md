@@ -10,8 +10,8 @@ Everything runs in your browser. The PDF is never uploaded anywhere.
   - *Same width, trim each page's height* (default) – consistent width, no empty space at the bottom of short pages
   - *Each page separately* or *Same box for all pages*
   - Adjustable padding, whiteness threshold, extra per-side trim and page range
-- **N-up** – put 1, 2, 3 or 4 cropped pages on one sheet, stacked or side by side, on A4 / A4 landscape / Letter or a fit-to-content sheet, with optional divider lines. The first sheet can hold a different number of pages from the rest (default: 3 on the first sheet, then 2, so a 5-page question paper fits on 2 sheets).
-- **Defaults** – 1 mm padding, side by side on A4 landscape, 1 mm sheet margin and 1 mm gap.
+- **N-up** – put 1, 2, 3 or 4 cropped pages on one sheet, stacked or side by side, on A4 / A4 landscape / Letter or a fit-to-content sheet, with optional divider lines.
+- **Defaults** – 3 pages per sheet side by side on A4 landscape (a 5-page question paper fits on 2 sheets), 1 mm padding, 1 mm sheet margin and 1 mm gap.
 - **Password-protected PDFs** – you'll be asked for the password. PDFs that open freely but restrict editing work too.
 - **Vector output** – text stays sharp and selectable. If a file can't be edited directly, it falls back to high-resolution images (150–300 DPI).
 

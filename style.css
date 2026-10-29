@@ -109,7 +109,6 @@ summary { cursor: pointer; font-weight: 500; margin-bottom: 8px; }
 .seg button { flex: 1; padding: 8px 0; border: 0; background: var(--bg); color: var(--text); font: inherit; cursor: pointer; border-right: 1px solid var(--line); }
 .seg button:last-child { border-right: 0; }
 .seg button.on { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
-.seglabel { font-size: 13px; color: var(--muted); font-weight: 400; }
 
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 16px; border-radius: 9px; border: 1px solid var(--line); font: inherit; font-weight: 600; cursor: pointer; text-decoration: none; }
 .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
